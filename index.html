@@ -1115,18 +1115,18 @@ canvas { width: 100% !important; max-height: 300px; }
           <div id="planList"></div>
         </div>
 
-        <!-- 每月存款计划 -->
+        <!-- 年度存款计划 -->
         <div class="card">
           <div class="card-header">
-            <h3>💰 每月存款计划</h3>
-            <span class="date" id="savingsMonthLabel" style="font-size:13px"></span>
+            <h3>💰 年度存款计划</h3>
+            <span class="date" id="savingsYearLabel" style="font-size:13px"></span>
           </div>
           <div class="input-row" style="margin-bottom:12px">
-            <input type="number" id="savingsTarget" placeholder="本月目标金额" min="0" step="1" style="flex:1">
+            <input type="number" id="savingsTarget" placeholder="年度目标金额" min="0" step="1" style="flex:1">
             <button class="btn sm" onclick="saveSavingsTarget()">保存</button>
           </div>
           <div class="input-row" style="margin-bottom:12px">
-            <input type="number" id="savingsActual" placeholder="本月已存金额" min="0" step="1" style="flex:1">
+            <input type="number" id="savingsActual" placeholder="今年已存金额" min="0" step="1" style="flex:1">
             <button class="btn sm" onclick="saveSavingsActual()">更新</button>
           </div>
           <div id="savingsProgress"></div>
@@ -1275,6 +1275,7 @@ let state = {
 function init() {
   applyTheme();
   startClock();
+  try { migrateSavings(); } catch(e) { console.error('migrateSavings 失败:', e); }
   try { renderAll(); } catch(e) { console.error('renderAll 失败:', e); }
   try { renderCalendar(); } catch(e) { console.error('renderCalendar 失败:', e); }
   try {
@@ -1648,13 +1649,39 @@ function deletePlan(id) {
   save(); renderCalBottom(); renderCalendar();
 }
 
-// ===== 每月存款计划 =====
-function monthKey(d) {
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+// ===== 年度存款计划 =====
+function yearKey(d) {
+  return `${d.getFullYear()}`;
+}
+
+// 旧月度数据(YYYY-MM)迁移为年度数据(YYYY)：各月目标/已存分别求和
+function migrateSavings() {
+  const s = state.savings;
+  if (!s || typeof s !== 'object') { state.savings = {}; return; }
+  let changed = false;
+  const yearly = {};
+  Object.keys(s).forEach(k => {
+    const v = s[k] || {};
+    if (/^\d{4}$/.test(k)) {
+      // 已是年度格式
+      yearly[k] = { target: v.target || 0, actual: v.actual || 0 };
+    } else if (/^\d{4}-\d{2}$/.test(k)) {
+      // 旧月度格式 → 按年聚合
+      const y = k.slice(0, 4);
+      if (!yearly[y]) yearly[y] = { target: 0, actual: 0 };
+      yearly[y].target += (v.target || 0);
+      yearly[y].actual += (v.actual || 0);
+      changed = true;
+    }
+  });
+  if (changed) {
+    state.savings = yearly;
+    save();
+  }
 }
 
 function getCurrentSavings() {
-  const key = monthKey(new Date(state.calDate));
+  const key = yearKey(new Date(state.calDate));
   if (!state.savings[key]) state.savings[key] = { target: 0, actual: 0 };
   return { key, data: state.savings[key] };
 }
@@ -1679,18 +1706,28 @@ function saveSavingsActual() {
 
 function renderSavings() {
   const d = new Date(state.calDate);
-  const key = monthKey(d);
+  const key = yearKey(d);
   if (!state.savings[key]) state.savings[key] = { target: 0, actual: 0 };
   const cur = state.savings[key];
 
-  document.getElementById('savingsMonthLabel').textContent = `${d.getFullYear()}年${d.getMonth()+1}月`;
+  document.getElementById('savingsYearLabel').textContent = `${d.getFullYear()}年`;
 
   // 进度展示
   const prog = document.getElementById('savingsProgress');
   if (cur.target > 0) {
     const pct = Math.min(100, (cur.actual / cur.target * 100));
     const remain = Math.max(0, cur.target - cur.actual);
-    const color = pct >= 100 ? 'var(--income)' : pct >= 60 ? 'var(--primary)' : 'var(--expense)';
+    const color = pct >= 100 ? 'var(--income)' : pct >= 60 ? 'var(--accent)' : 'var(--expense)';
+    // 距年底剩余天数（仅当年）
+    let yearTip = '';
+    const now = new Date();
+    if (d.getFullYear() === now.getFullYear()) {
+      const yearEnd = new Date(d.getFullYear(), 11, 31);
+      const daysLeft = Math.max(0, Math.ceil((yearEnd - now) / 86400000));
+      if (pct < 100 && daysLeft > 0) {
+        yearTip = ` · 距年底还有 ${daysLeft} 天，每月约需 ¥${(remain / Math.max(1, Math.ceil(daysLeft / 30))).toFixed(0)}`;
+      }
+    }
     prog.innerHTML = `
       <div style="margin-bottom:6px;display:flex;justify-content:space-between;font-size:13px">
         <span>已存 ¥${cur.actual.toFixed(0)} / 目标 ¥${cur.target.toFixed(0)}</span>
@@ -1700,33 +1737,32 @@ function renderSavings() {
         <div style="height:100%;width:${pct}%;background:linear-gradient(90deg, #d4a843, #a87820);border-radius:7px;transition:width .3s"></div>
       </div>
       <div style="font-size:12px;color:var(--text-muted)">
-        ${pct >= 100 ? '🎉 已完成本月目标！' : `还差 ¥${remain.toFixed(0)}`}
+        ${pct >= 100 ? '🎉 已完成年度目标！' : `还差 ¥${remain.toFixed(0)}${yearTip}`}
       </div>
     `;
   } else {
-    prog.innerHTML = '<div class="cal-empty-hint">还没设置本月目标</div>';
+    prog.innerHTML = '<div class="cal-empty-hint">还没设置年度目标</div>';
   }
 
-  // 历史记录（最近6个月）
+  // 历史记录（最近6年）
   const hist = document.getElementById('savingsHistory');
   const keys = Object.keys(state.savings).sort().reverse().slice(0, 6);
   if (keys.length === 0) {
     hist.innerHTML = '';
   } else {
-    hist.innerHTML = '<div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">历史记录</div>' +
+    hist.innerHTML = '<div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">历年记录</div>' +
       keys.map(k => {
         const item = state.savings[k];
         if (!item || item.target === 0) return '';
         const p = Math.min(100, (item.actual / item.target * 100));
-        const [y, m] = k.split('-');
         return `
           <div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:12px">
             <div style="display:flex;justify-content:space-between;margin-bottom:3px">
-              <span>${y}年${parseInt(m)}月</span>
+              <span>${k}年</span>
               <span style="color:${p>=100?'var(--income)':'var(--text-muted)'}">¥${(item.actual||0).toFixed(0)} / ¥${item.target.toFixed(0)} · ${p.toFixed(0)}%</span>
             </div>
             <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
-              <div style="height:100%;width:${p}%;background:var(--primary);border-radius:2px"></div>
+              <div style="height:100%;width:${p}%;background:var(--accent);border-radius:2px"></div>
             </div>
           </div>
         `;
