@@ -1126,7 +1126,7 @@ canvas { width: 100% !important; max-height: 300px; }
             <button class="btn sm" onclick="saveSavingsTarget()">保存</button>
           </div>
           <div class="input-row" style="margin-bottom:12px">
-            <input type="number" id="savingsActual" placeholder="今年已存金额" min="0" step="1" style="flex:1">
+            <input type="number" id="savingsActual" placeholder="本月已存金额" min="0" step="1" style="flex:1">
             <button class="btn sm" onclick="saveSavingsActual()">更新</button>
           </div>
           <div id="savingsProgress"></div>
@@ -1649,32 +1649,53 @@ function deletePlan(id) {
   save(); renderCalBottom(); renderCalendar();
 }
 
-// ===== 年度存款计划 =====
+// ===== 年度存款计划（按月记录，年度累加） =====
+// 数据结构: { '2026': { target: 年度目标, months: { '2026-01': 金额, '2026-02': 金额, ... } } }
 function yearKey(d) {
   return `${d.getFullYear()}`;
 }
 
-// 旧月度数据(YYYY-MM)迁移为年度数据(YYYY)：各月目标/已存分别求和
+function monthKeyOf(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+function yearTotal(y) {
+  const item = state.savings[y];
+  if (!item || !item.months) return 0;
+  return Object.values(item.months).reduce((s, v) => s + (parseFloat(v) || 0), 0);
+}
+
+// 旧数据迁移：统一为 { YYYY: { target, months } }
 function migrateSavings() {
   const s = state.savings;
   if (!s || typeof s !== 'object') { state.savings = {}; return; }
   let changed = false;
   const yearly = {};
+  const now = new Date();
+  const nowMK = monthKeyOf(now);
   Object.keys(s).forEach(k => {
     const v = s[k] || {};
     if (/^\d{4}$/.test(k)) {
-      // 已是年度格式
-      yearly[k] = { target: v.target || 0, actual: v.actual || 0 };
+      if (v.months && typeof v.months === 'object') {
+        // 已是最新格式
+        yearly[k] = { target: v.target || 0, months: v.months };
+      } else {
+        // 旧年度格式 {target, actual} → actual 记入当前月
+        const months = {};
+        if ((v.actual || 0) > 0) months[nowMK] = v.actual;
+        yearly[k] = { target: v.target || 0, months };
+        changed = true;
+      }
     } else if (/^\d{4}-\d{2}$/.test(k)) {
-      // 旧月度格式 → 按年聚合
+      // 更早的月度格式 → 金额记入对应月份，目标按年累加
       const y = k.slice(0, 4);
-      if (!yearly[y]) yearly[y] = { target: 0, actual: 0 };
+      if (!yearly[y]) yearly[y] = { target: 0, months: {} };
       yearly[y].target += (v.target || 0);
-      yearly[y].actual += (v.actual || 0);
+      if ((v.actual || 0) > 0) yearly[y].months[k] = v.actual;
       changed = true;
     }
   });
-  if (changed) {
+  if (changed || JSON.stringify(s) !== JSON.stringify(yearly)) {
     state.savings = yearly;
     save();
   }
@@ -1682,7 +1703,9 @@ function migrateSavings() {
 
 function getCurrentSavings() {
   const key = yearKey(new Date(state.calDate));
-  if (!state.savings[key]) state.savings[key] = { target: 0, actual: 0 };
+  if (!state.savings[key] || !state.savings[key].months) {
+    state.savings[key] = { target: (state.savings[key] && state.savings[key].target) || 0, months: {} };
+  }
   return { key, data: state.savings[key] };
 }
 
@@ -1699,7 +1722,9 @@ function saveSavingsActual() {
   const v = parseFloat(document.getElementById('savingsActual').value);
   if (isNaN(v) || v < 0) { alert('请输入有效的金额'); return; }
   const { key, data } = getCurrentSavings();
-  data.actual = v;
+  const mk = monthKeyOf(new Date(state.calDate));
+  if (v > 0) data.months[mk] = v;
+  else delete data.months[mk];
   state.savings[key] = data;
   save(); renderSavings();
 }
@@ -1707,16 +1732,27 @@ function saveSavingsActual() {
 function renderSavings() {
   const d = new Date(state.calDate);
   const key = yearKey(d);
-  if (!state.savings[key]) state.savings[key] = { target: 0, actual: 0 };
+  if (!state.savings[key] || !state.savings[key].months) {
+    state.savings[key] = { target: (state.savings[key] && state.savings[key].target) || 0, months: {} };
+  }
   const cur = state.savings[key];
+  const mk = monthKeyOf(d);
+  const monthActual = parseFloat(cur.months[mk]) || 0;
+  const yearActual = yearTotal(key);
 
   document.getElementById('savingsYearLabel').textContent = `${d.getFullYear()}年`;
 
-  // 进度展示
+  // 输入框预填当前查看月份的已存金额（输入中不覆盖）
+  const actualInput = document.getElementById('savingsActual');
+  if (document.activeElement !== actualInput) {
+    actualInput.value = monthActual > 0 ? monthActual : '';
+  }
+
+  // 年度进度展示
   const prog = document.getElementById('savingsProgress');
   if (cur.target > 0) {
-    const pct = Math.min(100, (cur.actual / cur.target * 100));
-    const remain = Math.max(0, cur.target - cur.actual);
+    const pct = Math.min(100, (yearActual / cur.target * 100));
+    const remain = Math.max(0, cur.target - yearActual);
     const color = pct >= 100 ? 'var(--income)' : pct >= 60 ? 'var(--accent)' : 'var(--expense)';
     // 距年底剩余天数（仅当年）
     let yearTip = '';
@@ -1730,7 +1766,7 @@ function renderSavings() {
     }
     prog.innerHTML = `
       <div style="margin-bottom:6px;display:flex;justify-content:space-between;font-size:13px">
-        <span>已存 ¥${cur.actual.toFixed(0)} / 目标 ¥${cur.target.toFixed(0)}</span>
+        <span>今年已存 ¥${yearActual.toFixed(0)} / 目标 ¥${cur.target.toFixed(0)}</span>
         <span style="color:${color};font-weight:600">${pct.toFixed(0)}%</span>
       </div>
       <div style="height:14px;background:var(--border);border-radius:7px;overflow:hidden;margin-bottom:6px">
@@ -1744,30 +1780,30 @@ function renderSavings() {
     prog.innerHTML = '<div class="cal-empty-hint">还没设置年度目标</div>';
   }
 
-  // 历史记录（最近6年）
+  // 本月已存提示 + 当年各月明细
   const hist = document.getElementById('savingsHistory');
-  const keys = Object.keys(state.savings).sort().reverse().slice(0, 6);
-  if (keys.length === 0) {
-    hist.innerHTML = '';
-  } else {
-    hist.innerHTML = '<div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">历年记录</div>' +
-      keys.map(k => {
-        const item = state.savings[k];
-        if (!item || item.target === 0) return '';
-        const p = Math.min(100, (item.actual / item.target * 100));
-        return `
-          <div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:12px">
-            <div style="display:flex;justify-content:space-between;margin-bottom:3px">
-              <span>${k}年</span>
-              <span style="color:${p>=100?'var(--income)':'var(--text-muted)'}">¥${(item.actual||0).toFixed(0)} / ¥${item.target.toFixed(0)} · ${p.toFixed(0)}%</span>
-            </div>
-            <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
-              <div style="height:100%;width:${p}%;background:var(--accent);border-radius:2px"></div>
-            </div>
-          </div>
-        `;
-      }).join('');
+  const monthKeys = Object.keys(cur.months).filter(k => (parseFloat(cur.months[k]) || 0) > 0).sort().reverse();
+  let html = '';
+  if (monthKeys.length > 0) {
+    html += `<div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">${d.getFullYear()}年每月存款</div>`;
+    html += monthKeys.map(k => {
+      const amt = parseFloat(cur.months[k]) || 0;
+      const m = parseInt(k.slice(5, 7));
+      const isCur = k === mk;
+      return `
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;${isCur ? 'font-weight:600' : ''}">
+          <span>${m}月${isCur ? '（本月）' : ''}</span>
+          <span style="color:${isCur ? 'var(--accent)' : 'var(--text-muted)'}">¥${amt.toFixed(0)}</span>
+        </div>
+      `;
+    }).join('');
+    html += `<div style="display:flex;justify-content:space-between;padding:6px 0 0;font-size:12px;font-weight:600">
+      <span>合计</span><span style="color:var(--accent)">¥${yearActual.toFixed(0)}</span>
+    </div>`;
+  } else if (cur.target > 0) {
+    html = '<div style="font-size:12px;color:var(--text-muted)">今年还没有存款记录</div>';
   }
+  hist.innerHTML = html;
 }
 
 // ===== 导出/导入 =====
