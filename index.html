@@ -6,42 +6,30 @@
 <meta name="format-detection" content="telephone=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#1a1209">
+<meta name="theme-color" content="#faf5e8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="renderer" content="webkit">
 <title>我的工作台</title>
 <style>
 
 :root {
-  --bg: #1a1209;
-  --bg-card: rgba(30, 22, 12, 0.82);
-  --bg-hover: rgba(60, 45, 25, 0.6);
-  --text: #f5e6c8;
-  --text-muted: #b8a080;
-  --accent: #d4a843;
-  --accent-hover: #e8c060;
-  --border: rgba(180, 150, 100, 0.25);
-  --danger: #e85d5d;
-  --success: #6bc96b;
-  --warning: #e8a838;
-  --purple: #c080d0;
-  --income: #6bc96b;
-  --expense: #e85d5d;
-  --radius: 14px;
-  --shadow: 0 8px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2);
-  --transition: all 0.25s ease;
-}
-
-[data-theme="light"] {
-  --bg: #f5efe6;
-  --bg-card: rgba(255, 250, 240, 0.88);
-  --bg-hover: rgba(230, 215, 190, 0.5);
+  --bg: #faf5e8;
+  --bg-card: rgba(255, 250, 238, 0.95);
+  --bg-hover: rgba(230, 215, 180, 0.5);
   --text: #3d2e1a;
-  --text-muted: #8a7a60;
-  --accent: #c4952a;
-  --accent-hover: #a87a20;
+  --text-muted: #8a7458;
+  --accent: #c49030;
+  --accent-hover: #a87820;
   --border: rgba(180, 150, 100, 0.3);
-  --shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  --danger: #d04545;
+  --success: #4ea84e;
+  --warning: #d08820;
+  --purple: #a060c0;
+  --income: #4ea84e;
+  --expense: #d04545;
+  --radius: 14px;
+  --shadow: 0 4px 16px rgba(120, 90, 50, 0.12), 0 2px 4px rgba(120, 90, 50, 0.06);
+  --transition: all 0.25s ease;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,9 +37,9 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   background:
-    radial-gradient(ellipse at 20% 10%, rgba(212,168,67,0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(180,130,60,0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(100,70,30,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse at 20% 10%, rgba(212,168,67,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(180,130,60,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(220,190,130,0.08) 0%, transparent 70%),
     var(--bg);
   background-attachment: fixed;
   color: var(--text);
@@ -65,10 +53,10 @@ body {
 /* ===== 侧边栏 ===== */
 .sidebar {
   width: 240px;
-  background: rgba(30, 22, 12, 0.9);
+  background: rgba(255, 250, 235, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-right: 1px solid rgba(212,168,67,0.15);
+  border-right: 1px solid rgba(180, 150, 100, 0.3);
   display: flex;
   flex-direction: column;
   padding: 20px 0;
@@ -119,10 +107,10 @@ body {
 .nav-item:hover { background: var(--bg-hover); color: var(--text); }
 
 .nav-item.active {
-  background: linear-gradient(135deg, rgba(212,168,67,0.9), rgba(180,130,50,0.9));
-  color: #1a1209;
+  background: linear-gradient(135deg, #c49030, #a87820);
+  color: #ffffff;
   font-weight: 600;
-  box-shadow: 0 2px 12px rgba(212,168,67,0.25);
+  box-shadow: 0 2px 12px rgba(180,130,50,0.3);
 }
 
 .nav-item .icon { font-size: 18px; }
@@ -142,7 +130,7 @@ body {
   padding: 10px;
   border-radius: 8px;
   border: 1px solid rgba(212,168,67,0.2);
-  background: rgba(20, 14, 6, 0.5);
+  background: rgba(255, 250, 235, 0.7);
   color: var(--text);
   cursor: pointer;
   font-size: 14px;
@@ -188,19 +176,19 @@ body {
 
 /* ===== 卡片 ===== */
 .card {
-  background: rgba(30, 22, 12, 0.75);
+  background: rgba(255, 250, 235, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: var(--radius);
   padding: 20px;
   box-shadow: var(--shadow);
-  border: 1px solid rgba(212,168,67,0.12);
+  border: 1px solid rgba(180, 150, 100, 0.25);
   transition: var(--transition);
 }
 
 .card:hover {
-  border-color: rgba(212,168,67,0.25);
-  box-shadow: 0 8px 32px rgba(212,168,67,0.08), 0 2px 8px rgba(0,0,0,0.3);
+  border-color: rgba(196, 144, 48, 0.4);
+  box-shadow: 0 6px 20px rgba(180, 130, 60, 0.15);
 }
 
 .card-header {
@@ -280,7 +268,7 @@ body {
   padding: 10px 14px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  background: rgba(20, 14, 6, 0.5);
+  background: rgba(255, 250, 235, 0.7);
   color: var(--text);
   font-size: 14px;
   transition: var(--transition);
@@ -330,7 +318,7 @@ body {
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background: rgba(20, 14, 6, 0.5);
+  background: rgba(255, 250, 235, 0.7);
   border-radius: 8px;
   border: 1px solid var(--border);
   transition: var(--transition);
@@ -395,7 +383,7 @@ body {
   padding: 12px 14px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  background: rgba(20, 14, 6, 0.5);
+  background: rgba(255, 250, 235, 0.7);
   color: var(--text);
   font-size: 14px;
   font-family: inherit;
@@ -413,7 +401,7 @@ body {
 }
 
 .note-card {
-  background: rgba(20, 14, 6, 0.5);
+  background: rgba(255, 250, 235, 0.7);
   border-radius: 8px;
   padding: 14px;
   border: 1px solid var(--border);
@@ -506,8 +494,8 @@ body {
 .calendar-cell.today .cal-dot.plan-done { background: #c084fc; }
 
 /* 日历下方两栏布局 */
-.cal-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
-@media (max-width: 700px) { .cal-bottom { grid-template-columns: 1fr; } }
+.cal-bottom { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 20px; }
+@media (max-width: 900px) { .cal-bottom { grid-template-columns: 1fr; } }
 
 /* 习惯打卡 */
 .habit-item {
@@ -515,7 +503,7 @@ body {
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  background: rgba(20, 14, 6, 0.5);
+  background: rgba(255, 250, 235, 0.7);
   border-radius: 8px;
   border: 1px solid var(--border);
   transition: var(--transition);
@@ -592,7 +580,7 @@ body {
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  background: rgba(20, 14, 6, 0.5);
+  background: rgba(255, 250, 235, 0.7);
   border-radius: 8px;
   border: 1px solid var(--border);
   transition: var(--transition);
@@ -854,9 +842,6 @@ canvas { width: 100% !important; max-height: 300px; }
       <button class="nav-item" data-page="calendar">
         <span class="icon">📅</span><span>日历</span>
       </button>
-      <button class="nav-item" data-page="account">
-        <span class="icon">💰</span><span>我的账户</span>
-      </button>
       <button class="nav-item" data-page="inventory">
         <span class="icon">📦</span><span>库存</span>
       </button>
@@ -915,20 +900,6 @@ canvas { width: 100% !important; max-height: 300px; }
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon green">💵</div>
-          <div class="stat-info">
-            <h3 class="positive" id="statIncome">¥0</h3>
-            <p>本月收入</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon red">💸</div>
-          <div class="stat-info">
-            <h3 class="negative" id="statExpense">¥0</h3>
-            <p>本月支出</p>
-          </div>
-        </div>
-        <div class="stat-card">
           <div class="stat-icon cyan">📦</div>
           <div class="stat-info">
             <h3 id="statInvCount">0</h3>
@@ -945,10 +916,6 @@ canvas { width: 100% !important; max-height: 300px; }
         <div class="card">
           <h3 style="margin-bottom:16px">📝 最近笔记</h3>
           <div id="dashNotes"></div>
-        </div>
-        <div class="card">
-          <h3 style="margin-bottom:16px">💰 最近账目</h3>
-          <div id="dashTrans"></div>
         </div>
       </div>
     </section>
@@ -1033,98 +1000,29 @@ canvas { width: 100% !important; max-height: 300px; }
           </div>
           <div id="planList"></div>
         </div>
+
+        <!-- 每月存款计划 -->
+        <div class="card">
+          <div class="card-header">
+            <h3>💰 每月存款计划</h3>
+            <span class="date" id="savingsMonthLabel" style="font-size:13px"></span>
+          </div>
+          <div class="input-row" style="margin-bottom:12px">
+            <input type="number" id="savingsTarget" placeholder="本月目标金额" min="0" step="1" style="flex:1">
+            <button class="btn sm" onclick="saveSavingsTarget()">保存</button>
+          </div>
+          <div class="input-row" style="margin-bottom:12px">
+            <input type="number" id="savingsActual" placeholder="本月已存金额" min="0" step="1" style="flex:1">
+            <button class="btn sm" onclick="saveSavingsActual()">更新</button>
+          </div>
+          <div id="savingsProgress"></div>
+          <div id="savingsHistory" style="margin-top:14px;max-height:140px;overflow-y:auto"></div>
+        </div>
       </div>
     </section>
 
     <!-- ===== 我的账户 ===== -->
-    <section class="page" id="page-account">
-      <div class="header">
-        <h1>我的账户</h1>
-        <div class="btn-group">
-          <button class="btn sm outline" id="acctTabRecord" onclick="switchAcctTab('record')">记账</button>
-          <button class="btn sm outline active" id="acctTabReview" onclick="switchAcctTab('review')">复盘</button>
-        </div>
-      </div>
-
-      <!-- 记账子页 -->
-      <div id="acct-record">
-        <div class="card" style="margin-bottom:20px">
-          <div class="card-header"><h3>记一笔</h3></div>
-          <div class="input-row">
-            <select id="txType">
-              <option value="expense">支出</option>
-              <option value="income">收入</option>
-            </select>
-            <input type="number" id="txAmount" placeholder="金额" min="0.01" step="0.01" onkeydown="if(event.key==='Enter')addTransaction()">
-            <select id="txCategory">
-              <option value="餐饮">餐饮</option>
-              <option value="交通">交通</option>
-              <option value="购物">购物</option>
-              <option value="住房">住房</option>
-              <option value="娱乐">娱乐</option>
-              <option value="医疗">医疗</option>
-              <option value="教育">教育</option>
-              <option value="通讯">通讯</option>
-              <option value="工资">工资</option>
-              <option value="理财">理财</option>
-              <option value="兼职">兼职</option>
-              <option value="红包">红包</option>
-              <option value="其他">其他</option>
-            </select>
-            <input type="text" id="txNote" placeholder="备注（可选）" onkeydown="if(event.key==='Enter')addTransaction()">
-            <button class="btn" onclick="addTransaction()">记账</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <h3>流水记录</h3>
-            <div class="btn-group">
-              <button class="btn xs outline active" id="filterAll" onclick="setTxFilter('all')">全部</button>
-              <button class="btn xs outline" id="filterIncome" onclick="setTxFilter('income')">收入</button>
-              <button class="btn xs outline" id="filterExpense" onclick="setTxFilter('expense')">支出</button>
-            </div>
-          </div>
-          <div class="transaction-list" id="transactionList"></div>
-        </div>
-      </div>
-
-      <!-- 复盘子页 -->
-      <div id="acct-review" style="display:none">
-        <!-- 时间筛选 -->
-        <div class="card" style="margin-bottom:20px">
-          <div class="card-header">
-            <h3>复盘周期</h3>
-            <div class="btn-group">
-              <button class="btn xs outline active" id="revCurMonth" onclick="setReviewPeriod('curMonth')">本月</button>
-              <button class="btn xs outline" id="revLastMonth" onclick="setReviewPeriod('lastMonth')">上月</button>
-              <button class="btn xs outline" id="rev3Months" onclick="setReviewPeriod('3months')">近3月</button>
-              <button class="btn xs outline" id="revAll" onclick="setReviewPeriod('all')">全部</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 汇总卡片 -->
-        <div class="summary-grid" id="reviewSummary"></div>
-
-        <!-- 图表区域 -->
-        <div class="chart-row">
-          <div class="chart-container">
-            <h4>📊 分类支出分布</h4>
-            <canvas id="chartCategory"></canvas>
-          </div>
-          <div class="chart-container">
-            <h4>📈 月度收支趋势</h4>
-            <canvas id="chartMonthly"></canvas>
-          </div>
-        </div>
-        <div class="chart-row full" style="margin-bottom:0">
-          <div class="chart-container">
-            <h4>🔝 支出排行 Top 10</h4>
-            <div id="topExpenses"></div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- 记账模块已删除 -->
 
     <!-- ===== 库存管理（囤货清单） ===== -->
     <section class="page" id="page-inventory">
@@ -1163,10 +1061,10 @@ canvas { width: 100% !important; max-height: 300px; }
       <div class="card" style="max-width:600px">
         <div class="setting-row">
           <div>
-            <h4>深色模式</h4>
-            <p>切换亮色/深色主题</p>
+            <h4>主题</h4>
+            <p>当前为米色浅色主题</p>
           </div>
-          <div class="switch" id="darkSwitch" onclick="toggleTheme()"></div>
+          <span class="date" style="font-size:13px">☀️ 浅色</span>
         </div>
         <div class="setting-row">
           <div>
@@ -1181,13 +1079,6 @@ canvas { width: 100% !important; max-height: 300px; }
             <p>删除所有笔记，此操作不可撤销</p>
           </div>
           <button class="btn danger sm" onclick="clearNotes()">清除</button>
-        </div>
-        <div class="setting-row">
-          <div>
-            <h4>清除所有账目</h4>
-            <p>删除所有收支记录，此操作不可撤销</p>
-          </div>
-          <button class="btn danger sm" onclick="clearTransactions()">清除</button>
         </div>
         <div class="setting-row">
           <div>
@@ -1257,16 +1148,13 @@ function safeParse(str, fallback) {
 let state = {
   tasks: safeParse(storage.get('tasks'), []),
   notes: safeParse(storage.get('notes'), []),
-  transactions: safeParse(storage.get('transactions'), []),
   inventory: safeParse(storage.get('inventory'), []),
   habits: safeParse(storage.get('habits'), []),
   plans: safeParse(storage.get('plans'), []),
-  theme: storage.get('theme') || 'dark',
+  savings: safeParse(storage.get('savings'), {}),
+  theme: storage.get('theme') || 'light',
   calDate: new Date(),
   calSelectedDate: new Date().toDateString(),
-  txFilter: 'all',
-  reviewPeriod: 'curMonth',
-  acctTab: 'record'
 };
 
 // ===== 初始化 =====
@@ -1278,6 +1166,7 @@ function init() {
   try {
     if (!state.calSelectedDate) state.calSelectedDate = new Date().toDateString();
     renderCalBottom();
+    renderSavings();
   } catch(e) { console.error('renderCalBottom 失败:', e); }
   try {
     document.querySelectorAll('.nav-item').forEach(btn => {
@@ -1287,37 +1176,29 @@ function init() {
   try {
     document.getElementById('themeBtn').addEventListener('click', toggleTheme);
   } catch(e) { console.error('主题按钮绑定失败:', e); }
-  try { updateTxFilterUI(); } catch(e) {}
-  try { updateReviewPeriodUI(); } catch(e) {}
-  try { switchAcctTab('review'); } catch(e) {}
+  try { renderSavings(); } catch(e) { console.error('renderSavings 失败:', e); }
 }
 
 function save() {
   storage.set('tasks', JSON.stringify(state.tasks));
   storage.set('notes', JSON.stringify(state.notes));
-  storage.set('transactions', JSON.stringify(state.transactions));
   storage.set('inventory', JSON.stringify(state.inventory));
   storage.set('habits', JSON.stringify(state.habits));
   storage.set('plans', JSON.stringify(state.plans));
+  storage.set('savings', JSON.stringify(state.savings));
 }
 
 // ===== 主题 =====
 function applyTheme() {
-  document.documentElement.setAttribute('data-theme', state.theme === 'light' ? 'light' : 'dark');
-  document.getElementById('themeIcon').textContent = state.theme === 'light' ? '🌙' : '☀️';
-  document.getElementById('themeLabel').textContent = state.theme === 'light' ? '深色模式' : '亮色模式';
+  document.documentElement.setAttribute('data-theme', 'light');
+  document.getElementById('themeIcon').textContent = '☀️';
+  document.getElementById('themeLabel').textContent = '当前主题';
   const sw = document.getElementById('darkSwitch');
-  if (sw) sw.classList.toggle('on', state.theme === 'dark');
+  if (sw) sw.style.display = 'none';
 }
 
 function toggleTheme() {
-  state.theme = state.theme === 'dark' ? 'light' : 'dark';
-  storage.set('theme', state.theme);
-  applyTheme();
-  // 重绘图表
-  if (document.getElementById('page-account').classList.contains('active') && state.acctTab === 'review') {
-    renderReview();
-  }
+  // 浅色主题固定
 }
 
 // ===== 页面切换 =====
@@ -1325,13 +1206,8 @@ function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === name));
-  if (name === 'account') {
-    if (state.acctTab === 'record') renderTransactions();
-    else renderReview();
-  }
-  if (name === 'inventory') {
-    renderInventory();
-  }
+  if (name === 'calendar') renderSavings();
+  if (name === 'inventory') renderInventory();
 }
 
 // ===== 时钟 =====
@@ -1435,377 +1311,6 @@ function renderNotes() {
   `).join('');
 }
 
-// ===== 记账 =====
-function addTransaction() {
-  const type = document.getElementById('txType').value;
-  const amount = parseFloat(document.getElementById('txAmount').value);
-  if (!amount || amount <= 0) { alert('请输入有效金额'); return; }
-  const category = document.getElementById('txCategory').value;
-  const note = document.getElementById('txNote').value.trim();
-
-  // 根据类型智能调整分类
-  const incomeCats = ['工资','理财','兼职','红包'];
-  const expenseCats = ['餐饮','交通','购物','住房','娱乐','医疗','教育','通讯'];
-  let finalCat = category;
-  if (type === 'income' && expenseCats.includes(category)) finalCat = '其他';
-  if (type === 'expense' && incomeCats.includes(category)) finalCat = '其他';
-
-  state.transactions.unshift({
-    id: Date.now(),
-    type, amount, category: finalCat, note,
-    date: new Date().toISOString()
-  });
-  document.getElementById('txAmount').value = '';
-  document.getElementById('txNote').value = '';
-  save(); renderAll();
-  if (document.getElementById('page-account').classList.contains('active')) {
-    renderTransactions();
-  }
-}
-
-function deleteTransaction(id) {
-  state.transactions = state.transactions.filter(t => t.id !== id);
-  save(); renderAll();
-  if (document.getElementById('page-account').classList.contains('active')) {
-    if (state.acctTab === 'record') renderTransactions();
-    else renderReview();
-  }
-}
-
-function clearTransactions() {
-  if (confirm('确定删除所有账目？')) { state.transactions = []; save(); renderAll(); }
-}
-
-function setTxFilter(f) { state.txFilter = f; updateTxFilterUI(); renderTransactions(); }
-
-function updateTxFilterUI() {
-  ['all','income','expense'].forEach(f => {
-    const el = document.getElementById('filter'+f.charAt(0).toUpperCase()+f.slice(1));
-    if (el) el.classList.toggle('active', state.txFilter === f);
-  });
-}
-
-function renderTransactions() {
-  const list = document.getElementById('transactionList');
-  let txs = [...state.transactions];
-  if (state.txFilter === 'income') txs = txs.filter(t => t.type === 'income');
-  if (state.txFilter === 'expense') txs = txs.filter(t => t.type === 'expense');
-  txs.sort((a,b) => new Date(b.date) - new Date(a.date));
-
-  if (txs.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div class="emoji">💰</div><p>暂无账目记录</p></div>';
-    return;
-  }
-
-  const catIcons = {
-    '餐饮':'🍔','交通':'🚌','购物':'🛍️','住房':'🏠','娱乐':'🎮','医疗':'🏥','教育':'📚','通讯':'📱',
-    '工资':'💼','理财':'📈','兼职':'🔧','红包':'🧧','其他':'📌'
-  };
-
-  list.innerHTML = txs.map(t => `
-    <div class="transaction-item">
-      <div class="tx-icon ${t.type}">${catIcons[t.category] || '📌'}</div>
-      <div class="tx-info">
-        <div class="tx-category">${t.category}${t.note ? ' · ' + escapeHtml(t.note) : ''}</div>
-        <div class="tx-date">${formatDateFull(t.date)}</div>
-      </div>
-      <div class="tx-amount ${t.type}">${t.type==='income'?'+':'-'}¥${t.amount.toFixed(2)}</div>
-      <button class="tx-delete" onclick="deleteTransaction(${t.id})">✕</button>
-    </div>
-  `).join('');
-}
-
-// ===== 账户选项卡 =====
-function switchAcctTab(tab) {
-  state.acctTab = tab;
-  document.getElementById('acct-record').style.display = tab === 'record' ? 'block' : 'none';
-  document.getElementById('acct-review').style.display = tab === 'review' ? 'block' : 'none';
-  document.getElementById('acctTabRecord').classList.toggle('active', tab === 'record');
-  document.getElementById('acctTabReview').classList.toggle('active', tab === 'review');
-  if (tab === 'record') renderTransactions();
-  else renderReview();
-}
-
-// ===== 复盘 =====
-function setReviewPeriod(p) { state.reviewPeriod = p; updateReviewPeriodUI(); renderReview(); }
-
-function updateReviewPeriodUI() {
-  ['curMonth','lastMonth','3months','all'].forEach(p => {
-    const el = document.getElementById('rev'+p.charAt(0).toUpperCase()+p.slice(1));
-    if (el) el.classList.toggle('active', state.reviewPeriod === p);
-  });
-}
-
-function getFilteredTransactions() {
-  const now = new Date();
-  return state.transactions.filter(t => {
-    const d = new Date(t.date);
-    if (state.reviewPeriod === 'curMonth') return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
-    if (state.reviewPeriod === 'lastMonth') {
-      const lm = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      return d.getFullYear() === lm.getFullYear() && d.getMonth() === lm.getMonth();
-    }
-    if (state.reviewPeriod === '3months') {
-      const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, 1);
-      return d >= threeMonthsAgo;
-    }
-    return true;
-  });
-}
-
-function renderReview() {
-  const txs = getFilteredTransactions();
-
-  // 汇总
-  const totalIncome = txs.filter(t => t.type === 'income').reduce((s,t) => s + t.amount, 0);
-  const totalExpense = txs.filter(t => t.type === 'expense').reduce((s,t) => s + t.amount, 0);
-  const balance = totalIncome - totalExpense;
-  const count = txs.length;
-  const avgDaily = count > 0 ? (totalExpense / Math.max(1, getDaySpan(txs))).toFixed(2) : '0';
-
-  document.getElementById('reviewSummary').innerHTML = `
-    <div class="summary-card">
-      <div class="label">总收入</div>
-      <div class="value" style="color:var(--income)">¥${totalIncome.toFixed(2)}</div>
-    </div>
-    <div class="summary-card">
-      <div class="label">总支出</div>
-      <div class="value" style="color:var(--expense)">¥${totalExpense.toFixed(2)}</div>
-    </div>
-    <div class="summary-card">
-      <div class="label">结余</div>
-      <div class="value" style="color:${balance>=0?'var(--income)':'var(--expense)'}">¥${balance.toFixed(2)}</div>
-    </div>
-    <div class="summary-card">
-      <div class="label">日均支出</div>
-      <div class="value">¥${avgDaily}</div>
-    </div>
-    <div class="summary-card">
-      <div class="label">交易笔数</div>
-      <div class="value">${count}</div>
-    </div>
-  `;
-
-  drawCategoryChart(txs);
-  drawMonthlyChart(txs);
-  renderTopExpenses(txs);
-}
-
-function getDaySpan(txs) {
-  if (txs.length === 0) return 1;
-  const dates = txs.map(t => new Date(t.date).getTime());
-  return Math.ceil((Math.max(...dates) - Math.min(...dates)) / 86400000) + 1;
-}
-
-// ===== 图表绘制 =====
-function getChartColors() {
-  const isDark = state.theme === 'dark';
-  return {
-    text: isDark ? '#94a3b8' : '#64748b',
-    grid: isDark ? '#334155' : '#e2e8f0',
-    income: '#22c55e',
-    expense: '#ef4444',
-    palette: ['#3b82f6','#ef4444','#22c55e','#f59e0b','#a855f7','#06b6d4','#ec4899','#14b8a6','#f97316','#8b5cf6','#64748b','#84cc16']
-  };
-}
-
-function drawCategoryChart(txs) {
-  const canvas = document.getElementById('chartCategory');
-  const ctx = canvas.getContext('2d');
-  const colors = getChartColors();
-  const dpr = window.devicePixelRatio || 1;
-
-  // 设置 canvas 尺寸
-  const rect = canvas.parentElement.getBoundingClientRect();
-  const w = rect.width - 40;
-  const h = 260;
-  canvas.width = w * dpr;
-  canvas.height = h * dpr;
-  canvas.style.width = w + 'px';
-  canvas.style.height = h + 'px';
-  ctx.scale(dpr, dpr);
-
-  // 分类汇总
-  const expenseByCat = {};
-  txs.filter(t => t.type === 'expense').forEach(t => {
-    expenseByCat[t.category] = (expenseByCat[t.category] || 0) + t.amount;
-  });
-  const entries = Object.entries(expenseByCat).sort((a,b) => b[1] - a[1]);
-  const total = entries.reduce((s,e) => s + e[1], 0);
-
-  if (entries.length === 0) {
-    ctx.fillStyle = colors.text;
-    ctx.font = '14px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('暂无支出数据', w/2, h/2);
-    return;
-  }
-
-  // 饼图
-  const cx = w * 0.38, cy = h / 2, radius = Math.min(cx - 20, cy - 30);
-  let startAngle = -Math.PI / 2;
-
-  entries.forEach((entry, i) => {
-    const slice = (entry[1] / total) * Math.PI * 2;
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, radius, startAngle, startAngle + slice);
-    ctx.fillStyle = colors.palette[i % colors.palette.length];
-    ctx.fill();
-    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg-card').trim() || '#1e293b';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    startAngle += slice;
-  });
-
-  // 图例
-  const lx = w * 0.72;
-  let ly = 30;
-  entries.forEach((entry, i) => {
-    const pct = total > 0 ? ((entry[1]/total)*100).toFixed(1) : '0';
-    ctx.fillStyle = colors.palette[i % colors.palette.length];
-    ctx.fillRect(lx, ly, 12, 12);
-    ctx.fillStyle = colors.text;
-    ctx.font = '12px sans-serif';
-    ctx.textAlign = 'left';
-    const label = entry[0].length > 4 ? entry[0].slice(0,4)+'..' : entry[0];
-    ctx.fillText(`${label} ${pct}%`, lx + 18, ly + 11);
-    ly += 22;
-  });
-}
-
-function drawMonthlyChart(txs) {
-  const canvas = document.getElementById('chartMonthly');
-  const ctx = canvas.getContext('2d');
-  const colors = getChartColors();
-  const dpr = window.devicePixelRatio || 1;
-
-  const rect = canvas.parentElement.getBoundingClientRect();
-  const w = rect.width - 40;
-  const h = 260;
-  canvas.width = w * dpr;
-  canvas.height = h * dpr;
-  canvas.style.width = w + 'px';
-  canvas.style.height = h + 'px';
-  ctx.scale(dpr, dpr);
-
-  // 按月汇总
-  const monthly = {};
-  txs.forEach(t => {
-    const d = new Date(t.date);
-    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-    if (!monthly[key]) monthly[key] = { income: 0, expense: 0 };
-    monthly[key][t.type] += t.amount;
-  });
-
-  const months = Object.keys(monthly).sort();
-  if (months.length === 0) {
-    ctx.fillStyle = colors.text;
-    ctx.font = '14px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('暂无数据', w/2, h/2);
-    return;
-  }
-
-  // 确保至少展示最近3个月
-  const now = new Date();
-  const allMonths = [];
-  for (let i = 5; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    allMonths.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
-  }
-  const displayMonths = [...new Set([...allMonths, ...months])].sort().slice(-6);
-
-  const pad = { top: 20, bottom: 40, left: 50, right: 20 };
-  const gw = w - pad.left - pad.right;
-  const gh = h - pad.top - pad.bottom;
-
-  const maxVal = Math.max(
-    ...displayMonths.map(m => (monthly[m]?.expense || 0) + (monthly[m]?.income || 0)),
-    1
-  ) * 1.15;
-
-  // 网格
-  ctx.strokeStyle = colors.grid;
-  ctx.lineWidth = 0.5;
-  for (let i = 0; i <= 4; i++) {
-    const y = pad.top + (gh / 4) * i;
-    ctx.beginPath();
-    ctx.moveTo(pad.left, y);
-    ctx.lineTo(w - pad.right, y);
-    ctx.stroke();
-    ctx.fillStyle = colors.text;
-    ctx.font = '10px sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText('¥' + (maxVal * (1 - i/4)).toFixed(0), pad.left - 8, y + 4);
-  }
-
-  // 柱子
-  const barWidth = gw / displayMonths.length * 0.6;
-  const gap = gw / displayMonths.length * 0.2;
-
-  displayMonths.forEach((m, i) => {
-    const x = pad.left + (gw / displayMonths.length) * i + gap / 2;
-    const expense = monthly[m]?.expense || 0;
-    const income = monthly[m]?.income || 0;
-
-    // 支出柱
-    const eh = (expense / maxVal) * gh;
-    ctx.fillStyle = colors.expense;
-    ctx.fillRect(x, pad.top + gh - eh, barWidth / 2, eh);
-
-    // 收入柱
-    const ih = (income / maxVal) * gh;
-    ctx.fillStyle = colors.income;
-    ctx.fillRect(x + barWidth / 2 + 2, pad.top + gh - ih, barWidth / 2, ih);
-
-    // 标签
-    ctx.fillStyle = colors.text;
-    ctx.font = '11px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(m.slice(5), x + barWidth / 2 + 1, h - 10);
-  });
-
-  // 图例
-  ctx.fillStyle = colors.expense;
-  ctx.fillRect(w - 130, 8, 10, 10);
-  ctx.fillStyle = colors.text;
-  ctx.font = '11px sans-serif';
-  ctx.textAlign = 'left';
-  ctx.fillText('支出', w - 115, 17);
-  ctx.fillStyle = colors.income;
-  ctx.fillRect(w - 60, 8, 10, 10);
-  ctx.fillText('收入', w - 45, 17);
-}
-
-function renderTopExpenses(txs) {
-  const container = document.getElementById('topExpenses');
-  const expenseTxs = txs.filter(t => t.type === 'expense').sort((a,b) => b.amount - a.amount).slice(0, 10);
-
-  if (expenseTxs.length === 0) {
-    container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:20px">暂无支出记录</p>';
-    return;
-  }
-
-  const maxAmount = expenseTxs[0].amount;
-  const catIcons = {
-    '餐饮':'🍔','交通':'🚌','购物':'🛍️','住房':'🏠','娱乐':'🎮','医疗':'🏥','教育':'📚','通讯':'📱',
-    '工资':'💼','理财':'📈','兼职':'🔧','红包':'🧧','其他':'📌'
-  };
-
-  container.innerHTML = expenseTxs.map((t, i) => `
-    <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)">
-      <span style="font-size:12px;color:var(--text-muted);width:20px">${i+1}</span>
-      <span>${catIcons[t.category]||'📌'}</span>
-      <span style="flex:1;font-size:13px">${t.category}${t.note?' · '+escapeHtml(t.note):''}</span>
-      <div style="width:120px;height:6px;background:var(--border);border-radius:3px;overflow:hidden">
-        <div style="height:100%;background:var(--expense);border-radius:3px;width:${(t.amount/maxAmount*100).toFixed(0)}%"></div>
-      </div>
-      <span style="font-size:14px;font-weight:600;color:var(--expense);width:80px;text-align:right">¥${t.amount.toFixed(2)}</span>
-      <span style="font-size:11px;color:var(--text-muted);width:80px;text-align:right">${formatDateShort(t.date)}</span>
-    </div>
-  `).join('');
-}
 
 // ===== Dashboard =====
 function renderDashboard() {
@@ -1816,17 +1321,6 @@ function renderDashboard() {
   document.getElementById('statPending').textContent = total - done;
   document.getElementById('statNotes').textContent = state.notes.length;
   document.getElementById('statInvCount').textContent = state.inventory.length;
-
-  // 本月收支
-  const now = new Date();
-  const thisMonth = state.transactions.filter(t => {
-    const d = new Date(t.date);
-    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
-  });
-  const mIncome = thisMonth.filter(t => t.type === 'income').reduce((s,t) => s + t.amount, 0);
-  const mExpense = thisMonth.filter(t => t.type === 'expense').reduce((s,t) => s + t.amount, 0);
-  document.getElementById('statIncome').textContent = '¥' + mIncome.toFixed(2);
-  document.getElementById('statExpense').textContent = '¥' + mExpense.toFixed(2);
 
   // 待办任务
   const pending = state.tasks.filter(t => !t.done).slice(0, 5);
@@ -1855,26 +1349,11 @@ function renderDashboard() {
       </div>
     `).join('');
   }
-
-  // 最近账目
-  const recentTxs = [...state.transactions].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
-  const dashTrans = document.getElementById('dashTrans');
-  if (recentTxs.length === 0) {
-    dashTrans.innerHTML = '<p style="color:var(--text-muted);font-size:14px;padding:12px 0">暂无账目</p>';
-  } else {
-    dashTrans.innerHTML = recentTxs.map(t => `
-      <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">
-        <span style="font-size:14px">${t.category}</span>
-        <span style="flex:1;font-size:12px;color:var(--text-muted)">${t.note||''}</span>
-        <span style="font-size:14px;font-weight:600;color:${t.type==='income'?'var(--income)':'var(--expense)'}">${t.type==='income'?'+':'-'}¥${t.amount.toFixed(2)}</span>
-      </div>
-    `).join('');
-  }
 }
 
 // ===== 日历 =====
-function changeMonth(dir) { state.calDate.setMonth(state.calDate.getMonth() + dir); renderCalendar(); }
-function goToday() { state.calDate = new Date(); state.calSelectedDate = new Date().toDateString(); renderCalendar(); renderCalBottom(); }
+function changeMonth(dir) { state.calDate.setMonth(state.calDate.getMonth() + dir); renderCalendar(); renderSavings(); }
+function goToday() { state.calDate = new Date(); state.calSelectedDate = new Date().toDateString(); renderCalendar(); renderCalBottom(); renderSavings(); }
 
 function dateKey(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -2055,15 +1534,101 @@ function deletePlan(id) {
   save(); renderCalBottom(); renderCalendar();
 }
 
+// ===== 每月存款计划 =====
+function monthKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+function getCurrentSavings() {
+  const key = monthKey(new Date(state.calDate));
+  if (!state.savings[key]) state.savings[key] = { target: 0, actual: 0 };
+  return { key, data: state.savings[key] };
+}
+
+function saveSavingsTarget() {
+  const v = parseFloat(document.getElementById('savingsTarget').value);
+  if (!v || v < 0) { alert('请输入有效的目标金额'); return; }
+  const { key, data } = getCurrentSavings();
+  data.target = v;
+  state.savings[key] = data;
+  save(); renderSavings();
+}
+
+function saveSavingsActual() {
+  const v = parseFloat(document.getElementById('savingsActual').value);
+  if (isNaN(v) || v < 0) { alert('请输入有效的金额'); return; }
+  const { key, data } = getCurrentSavings();
+  data.actual = v;
+  state.savings[key] = data;
+  save(); renderSavings();
+}
+
+function renderSavings() {
+  const d = new Date(state.calDate);
+  const key = monthKey(d);
+  if (!state.savings[key]) state.savings[key] = { target: 0, actual: 0 };
+  const cur = state.savings[key];
+
+  document.getElementById('savingsMonthLabel').textContent = `${d.getFullYear()}年${d.getMonth()+1}月`;
+
+  // 进度展示
+  const prog = document.getElementById('savingsProgress');
+  if (cur.target > 0) {
+    const pct = Math.min(100, (cur.actual / cur.target * 100));
+    const remain = Math.max(0, cur.target - cur.actual);
+    const color = pct >= 100 ? 'var(--income)' : pct >= 60 ? 'var(--primary)' : 'var(--expense)';
+    prog.innerHTML = `
+      <div style="margin-bottom:6px;display:flex;justify-content:space-between;font-size:13px">
+        <span>已存 ¥${cur.actual.toFixed(0)} / 目标 ¥${cur.target.toFixed(0)}</span>
+        <span style="color:${color};font-weight:600">${pct.toFixed(0)}%</span>
+      </div>
+      <div style="height:14px;background:var(--border);border-radius:7px;overflow:hidden;margin-bottom:6px">
+        <div style="height:100%;width:${pct}%;background:linear-gradient(90deg, #d4a843, #a87820);border-radius:7px;transition:width .3s"></div>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted)">
+        ${pct >= 100 ? '🎉 已完成本月目标！' : `还差 ¥${remain.toFixed(0)}`}
+      </div>
+    `;
+  } else {
+    prog.innerHTML = '<div class="cal-empty-hint">还没设置本月目标</div>';
+  }
+
+  // 历史记录（最近6个月）
+  const hist = document.getElementById('savingsHistory');
+  const keys = Object.keys(state.savings).sort().reverse().slice(0, 6);
+  if (keys.length === 0) {
+    hist.innerHTML = '';
+  } else {
+    hist.innerHTML = '<div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">历史记录</div>' +
+      keys.map(k => {
+        const item = state.savings[k];
+        if (!item || item.target === 0) return '';
+        const p = Math.min(100, (item.actual / item.target * 100));
+        const [y, m] = k.split('-');
+        return `
+          <div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:12px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+              <span>${y}年${parseInt(m)}月</span>
+              <span style="color:${p>=100?'var(--income)':'var(--text-muted)'}">¥${(item.actual||0).toFixed(0)} / ¥${item.target.toFixed(0)} · ${p.toFixed(0)}%</span>
+            </div>
+            <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+              <div style="height:100%;width:${p}%;background:var(--primary);border-radius:2px"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+  }
+}
+
 // ===== 导出/导入 =====
 function exportData() {
   const data = {
     tasks: state.tasks,
     notes: state.notes,
-    transactions: state.transactions,
     inventory: state.inventory,
     habits: state.habits,
     plans: state.plans,
+    savings: state.savings,
     exportDate: new Date().toISOString()
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -2084,10 +1649,10 @@ function importData(event) {
       const data = JSON.parse(e.target.result);
       if (data.tasks) state.tasks = data.tasks;
       if (data.notes) state.notes = data.notes;
-      if (data.transactions) state.transactions = data.transactions;
       if (data.inventory) state.inventory = data.inventory;
       if (data.habits) state.habits = data.habits;
       if (data.plans) state.plans = data.plans;
+      if (data.savings) state.savings = data.savings;
       save(); renderAll();
       alert('数据导入成功！');
     } catch(err) {
@@ -2267,25 +1832,17 @@ function renderAll() {
   try { renderTasks(); } catch(e) { console.error('renderTasks:', e); }
   try { renderNotes(); } catch(e) { console.error('renderNotes:', e); }
   try { renderDashboard(); } catch(e) { console.error('renderDashboard:', e); }
-  if (document.getElementById('page-account').classList.contains('active')) {
-    try {
-      if (state.acctTab === 'record') renderTransactions();
-      else renderReview();
-    } catch(e) { console.error('renderAccount:', e); }
-  }
   if (document.getElementById('page-inventory').classList.contains('active')) {
     try { renderInventory(); } catch(e) { console.error('renderInventory:', e); }
   }
 }
 
-// 窗口 resize 时重绘图表
+// 窗口 resize 时仅日历自适应
 let resizeTimer;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {
-    if (document.getElementById('page-account').classList.contains('active') && state.acctTab === 'review') {
-      renderReview();
-    }
+    try { renderCalendar(); } catch(e) {}
   }, 200);
 });
 
