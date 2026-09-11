@@ -496,8 +496,10 @@ body {
 .calendar-cell.today .cal-dot.plan-done { background: #c084fc; }
 
 /* 日历下方两栏布局 */
-.cal-bottom { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 20px; }
+.cal-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
 @media (max-width: 900px) { .cal-bottom { grid-template-columns: 1fr; } }
+.cal-section-title { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; color: var(--text); padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid var(--border); }
+.cal-section-title .sec-stat { font-size: 11px; font-weight: 500; color: var(--text-muted); }
 
 /* 习惯打卡 */
 .habit-item {
@@ -1088,26 +1090,30 @@ canvas { width: 100% !important; max-height: 300px; }
       </div>
 
       <div class="cal-bottom">
-        <!-- 习惯打卡 -->
+        <!-- 本月打卡计划（打卡 + 计划合并） -->
         <div class="card">
           <div class="card-header">
-            <h3>✅ 每日打卡</h3>
+            <h3>✅ 本月打卡计划</h3>
             <span class="date" id="calHabitDate" style="font-size:13px"></span>
           </div>
-          <div class="input-row" style="margin-bottom:12px">
+
+          <!-- 小节：每日打卡 -->
+          <div class="cal-section-title">
+            <span>每日打卡</span>
+            <span class="sec-stat" id="habitMonthStat"></span>
+          </div>
+          <div class="input-row" style="margin-bottom:10px">
             <input type="text" id="habitInput" placeholder="添加习惯，如：喝水、跑步、读书..." onkeydown="if(event.key==='Enter')addHabit()">
             <button class="btn sm" onclick="addHabit()">+</button>
           </div>
-          <div id="habitList" style="display:flex;flex-direction:column;gap:6px"></div>
-        </div>
+          <div id="habitList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:18px"></div>
 
-        <!-- 当日计划 -->
-        <div class="card">
-          <div class="card-header">
-            <h3>📋 当日计划</h3>
-            <span class="date" id="calPlanDate" style="font-size:13px"></span>
+          <!-- 小节：当日计划 -->
+          <div class="cal-section-title">
+            <span>当日计划</span>
+            <span class="sec-stat" id="planMonthStat"></span>
           </div>
-          <div class="input-row" style="margin-bottom:12px">
+          <div class="input-row" style="margin-bottom:10px">
             <input type="text" id="planInput" placeholder="添加计划..." onkeydown="if(event.key==='Enter')addPlan()">
             <input type="time" id="planTime" style="flex:0 0 auto;width:90px">
             <button class="btn sm" onclick="addPlan()">+</button>
@@ -1554,9 +1560,12 @@ function renderCalBottom() {
   const days = ['日','一','二','三','四','五','六'];
   const dateLabel = `${sel.getMonth()+1}月${sel.getDate()}日 周${days[sel.getDay()]}`;
   document.getElementById('calHabitDate').textContent = dateLabel;
-  document.getElementById('calPlanDate').textContent = dateLabel;
 
-  // 习惯打卡
+  // 本月前缀（统计用）：跟随日历当前显示的月份
+  const calD = new Date(state.calDate);
+  const ymPrefix = `${calD.getFullYear()}-${String(calD.getMonth()+1).padStart(2,'0')}`;
+
+  // ===== 每日打卡 =====
   const habitList = document.getElementById('habitList');
   const dk = dateKey(sel);
   if (state.habits.length === 0) {
@@ -1575,18 +1584,26 @@ function renderCalBottom() {
           else break;
         }
       }
+      // 本月打卡天数
+      const monthDays = (h.records || []).filter(r => r.startsWith(ymPrefix)).length;
       return `
         <div class="habit-item ${isDone ? 'checked' : ''}">
           <div class="habit-check ${isDone ? 'done' : ''}" onclick="toggleHabit(${h.id})"></div>
           <span class="habit-name">${escapeHtml(h.name)}</span>
-          ${streak > 0 ? `<span class="habit-streak">🔥${streak}天</span>` : ''}
+          ${streak > 0 ? `<span class="habit-streak" title="连续打卡">🔥${streak}天</span>` : ''}
+          <span class="habit-streak" title="本月打卡" style="color:var(--accent)">📅${monthDays}天</span>
           <button class="habit-delete" onclick="deleteHabit(${h.id})">✕</button>
         </div>
       `;
     }).join('');
   }
+  // 本月打卡总次数统计
+  const monthCheckins = state.habits.reduce((s, h) =>
+    s + (h.records || []).filter(r => r.startsWith(ymPrefix)).length, 0);
+  const habitStat = document.getElementById('habitMonthStat');
+  if (habitStat) habitStat.textContent = state.habits.length > 0 ? `本月打卡 ${monthCheckins} 次` : '';
 
-  // 当日计划
+  // ===== 当日计划 =====
   const planList = document.getElementById('planList');
   const dayPlans = state.plans.filter(p => p.date === dk).sort((a,b) => (a.time || '99:99').localeCompare(b.time || '99:99'));
   if (dayPlans.length === 0) {
@@ -1602,6 +1619,15 @@ function renderCalBottom() {
         <button class="plan-delete" onclick="deletePlan(${p.id})">✕</button>
       </div>
     `).join('');
+  }
+  // 本月计划统计
+  const monthPlans = state.plans.filter(p => p.date && p.date.startsWith(ymPrefix));
+  const monthDone = monthPlans.filter(p => p.done).length;
+  const planStat = document.getElementById('planMonthStat');
+  if (planStat) {
+    planStat.textContent = monthPlans.length > 0
+      ? `本月 ${monthPlans.length} 项 · 完成 ${monthDone}`
+      : '';
   }
 }
 
