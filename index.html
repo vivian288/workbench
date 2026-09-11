@@ -1126,8 +1126,14 @@ canvas { width: 100% !important; max-height: 300px; }
             <button class="btn sm" onclick="saveSavingsTarget()">保存</button>
           </div>
           <div class="input-row" style="margin-bottom:12px">
-            <input type="number" id="savingsActual" placeholder="本月已存金额" min="0" step="1" style="flex:1">
-            <button class="btn sm" onclick="saveSavingsActual()">更新</button>
+            <select id="savingsMonth" onchange="onSavingsMonthChange()" style="flex:0 0 auto;width:86px">
+              <option value="01">1月</option><option value="02">2月</option><option value="03">3月</option>
+              <option value="04">4月</option><option value="05">5月</option><option value="06">6月</option>
+              <option value="07">7月</option><option value="08">8月</option><option value="09">9月</option>
+              <option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
+            </select>
+            <input type="number" id="savingsActual" placeholder="已存金额" min="0" step="1" style="flex:1">
+            <button class="btn sm" onclick="saveSavingsActual()">保存</button>
           </div>
           <div id="savingsProgress"></div>
           <div id="savingsHistory" style="margin-top:14px;max-height:140px;overflow-y:auto"></div>
@@ -1269,6 +1275,7 @@ let state = {
   theme: storage.get('theme') || 'light',
   calDate: new Date(),
   calSelectedDate: new Date().toDateString(),
+  savingsEditMK: null,
 };
 
 // ===== 初始化 =====
@@ -1467,8 +1474,8 @@ function renderDashboard() {
 }
 
 // ===== 日历 =====
-function changeMonth(dir) { state.calDate.setMonth(state.calDate.getMonth() + dir); renderCalendar(); renderSavings(); }
-function goToday() { state.calDate = new Date(); state.calSelectedDate = new Date().toDateString(); renderCalendar(); renderCalBottom(); renderSavings(); }
+function changeMonth(dir) { state.calDate.setMonth(state.calDate.getMonth() + dir); renderCalendar(); renderSavings(true); }
+function goToday() { state.calDate = new Date(); state.calSelectedDate = new Date().toDateString(); renderCalendar(); renderCalBottom(); renderSavings(true); }
 
 function dateKey(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -1722,27 +1729,68 @@ function saveSavingsActual() {
   const v = parseFloat(document.getElementById('savingsActual').value);
   if (isNaN(v) || v < 0) { alert('请输入有效的金额'); return; }
   const { key, data } = getCurrentSavings();
-  const mk = monthKeyOf(new Date(state.calDate));
+  const mk = state.savingsEditMK || monthKeyOf(new Date(state.calDate));
   if (v > 0) data.months[mk] = v;
   else delete data.months[mk];
   state.savings[key] = data;
   save(); renderSavings();
 }
 
-function renderSavings() {
+// 切换编辑月份（下拉框）
+function onSavingsMonthChange() {
+  const d = new Date(state.calDate);
+  const sel = document.getElementById('savingsMonth');
+  state.savingsEditMK = yearKey(d) + '-' + sel.value;
+  const item = state.savings[yearKey(d)];
+  const amt = (item && item.months && parseFloat(item.months[state.savingsEditMK])) || 0;
+  const actualInput = document.getElementById('savingsActual');
+  actualInput.value = amt > 0 ? amt : '';
+  actualInput.focus();
+  renderSavings();
+}
+
+// 从明细列表点击 ✎ 编辑某月
+function editSavingsMonth(mk) {
+  state.savingsEditMK = mk;
+  const sel = document.getElementById('savingsMonth');
+  sel.value = mk.slice(5, 7);
+  renderSavings();
+  const actualInput = document.getElementById('savingsActual');
+  actualInput.focus();
+}
+
+// 从明细列表点击 ✕ 删除某月记录
+function deleteSavingsMonth(mk) {
+  const m = parseInt(mk.slice(5, 7));
+  if (!confirm(`确定删除 ${mk.slice(0,4)}年${m}月的存款记录？`)) return;
+  const { key, data } = getCurrentSavings();
+  delete data.months[mk];
+  state.savings[key] = data;
+  save(); renderSavings();
+}
+
+function renderSavings(resetMonth) {
   const d = new Date(state.calDate);
   const key = yearKey(d);
   if (!state.savings[key] || !state.savings[key].months) {
     state.savings[key] = { target: (state.savings[key] && state.savings[key].target) || 0, months: {} };
   }
   const cur = state.savings[key];
-  const mk = monthKeyOf(d);
+  const calMK = monthKeyOf(d);
+  // 编辑月份：默认跟随日历显示的月份；手动改过则保持，除非年份变了或明确要求重置
+  if (resetMonth || !state.savingsEditMK || state.savingsEditMK.slice(0, 4) !== key) {
+    state.savingsEditMK = calMK;
+  }
+  const mk = state.savingsEditMK;
   const monthActual = parseFloat(cur.months[mk]) || 0;
   const yearActual = yearTotal(key);
 
   document.getElementById('savingsYearLabel').textContent = `${d.getFullYear()}年`;
 
-  // 输入框预填当前查看月份的已存金额（输入中不覆盖）
+  // 月份下拉框 + 输入框预填编辑月份的已存金额（输入中不覆盖）
+  const monthSel = document.getElementById('savingsMonth');
+  const selVal = mk.slice(5, 7);
+  if (monthSel.value !== selVal) monthSel.value = selVal;
   const actualInput = document.getElementById('savingsActual');
   if (document.activeElement !== actualInput) {
     actualInput.value = monthActual > 0 ? monthActual : '';
@@ -1780,7 +1828,7 @@ function renderSavings() {
     prog.innerHTML = '<div class="cal-empty-hint">还没设置年度目标</div>';
   }
 
-  // 本月已存提示 + 当年各月明细
+  // 各月明细（可编辑/删除）
   const hist = document.getElementById('savingsHistory');
   const monthKeys = Object.keys(cur.months).filter(k => (parseFloat(cur.months[k]) || 0) > 0).sort().reverse();
   let html = '';
@@ -1789,11 +1837,14 @@ function renderSavings() {
     html += monthKeys.map(k => {
       const amt = parseFloat(cur.months[k]) || 0;
       const m = parseInt(k.slice(5, 7));
-      const isCur = k === mk;
+      const isEditing = k === mk;
+      const isRealCur = k === monthKeyOf(new Date());
       return `
-        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;${isCur ? 'font-weight:600' : ''}">
-          <span>${m}月${isCur ? '（本月）' : ''}</span>
-          <span style="color:${isCur ? 'var(--accent)' : 'var(--text-muted)'}">¥${amt.toFixed(0)}</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;${isEditing ? 'font-weight:600' : ''}">
+          <span style="flex:1">${m}月${isEditing ? '<span style="color:var(--accent)">（编辑中）</span>' : (isRealCur ? '（本月）' : '')}</span>
+          <span style="color:${isEditing ? 'var(--accent)' : 'var(--text-muted)'};margin-right:6px">¥${amt.toFixed(0)}</span>
+          <button class="btn xs outline" style="padding:2px 8px" title="修改该月金额" onclick="editSavingsMonth('${k}')">✎</button>
+          <button class="btn xs danger" style="padding:2px 8px;margin-left:4px" title="删除该月记录" onclick="deleteSavingsMonth('${k}')">✕</button>
         </div>
       `;
     }).join('');
